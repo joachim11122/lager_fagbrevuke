@@ -1,1 +1,137 @@
-/*  */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f1f5f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 80%;
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+    color: #00796b;
+}
+
+#utstyrsliste, #ødelagtUtstyr, #ønskeliste, #lånteUtstyr {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+}
+
+.utstyr {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e0f2f1;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 14px;
+    font-weight: 500;
+    min-height: 50px;
+}
+
+.utstyr:hover {
+    transform: scale(1.03);
+}
+
+.utstyr.utleid {
+    background-color: #f8d7da;
+    border-left: 6px solid #d32f2f;
+}
+
+.utstyr-navn {
+    flex-grow: 1;
+}
+
+.status-btn {
+    background-color: #00796b;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-size: 12px;
+}
+
+.status-btn:hover {
+    background-color: #004d40;
+}
+
+.status-btn.utleid-btn {
+    background-color: #d32f2f;
+}
+
+.delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+}
+
+.delete-btn {
+    color: #d32f2f;
+}
+
+.delete-btn:hover {
+    color: #b63939;
+}
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    padding: 10px;
+    margin-top: 10px;
+    border: none;
+    background-color: #388e3c;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2e7d32;
+}
+
+.feilmelding {
+    color: red;
+    margin-top: 5px;
+}
+
+form {
+    margin-top: 20px;
+}
+
+form label {
+    display: block;
+    margin-bottom: 8px;
+}
+
+form input, form select {
+    margin-bottom: 15px;
+}
+
+form button {
+    background-color: #f57c00;
+}
+
+form button:hover {
+    background-color: #e65100;
+}

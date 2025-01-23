@@ -1,11 +1,167 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Utstyrsliste</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Hello world</h1>
+    <div class="container">
+        <h1>Utstyrsliste</h1>
+        <p>Her kan du holde styr på utstyret ditt og registrere hvem som låner det, samt markere ødelagt utstyr.</p>
+        
+        <h2>Legg til nytt utstyr</h2>
+        <input type="text" id="nyttUtstyr" placeholder="Navn på utstyr">
+        <button onclick="leggTilUtstyr()">Legg til</button>
+        <p id="feilmelding" class="feilmelding"></p>
+
+        <h3>Utstyrsliste</h3>
+        <ul id="utstyrsliste"></ul>
+
+        <h3>Registrer Lån</h3>
+        <form id="låneskjema" onsubmit="registrerLån(event)">
+            <label for="lånerNavn">Navn på låner:</label>
+            <input type="text" id="lånerNavn" required>
+
+            <label for="utstyrValg">Velg utstyr:</label>
+            <select id="utstyrValg" required>
+                <option value="" disabled selected>Velg utstyr</option>
+            </select>
+
+            <label for="låneDato">Lånedato:</label>
+            <input type="date" id="låneDato" required>
+
+            <label for="returDato">Retur dato:</label>
+            <input type="date" id="returDato" required>
+
+            <button type="submit">Registrer Lån</button>
+        </form>
+
+        <h3>Registrerte Lån</h3>
+        <ul id="lånteUtstyr"></ul>
+
+        <h3>Registrer Ødelagt Utstyr</h3>
+        <form id="ødelagtSkjema" onsubmit="registrerØdelagtUtstyr(event)">
+            <label for="ødelagtUtstyrNavn">Navn på ødelagt utstyr:</label>
+            <input type="text" id="ødelagtUtstyrNavn" required>
+
+            <label for="ødelagtBeskrivelse">Beskrivelse:</label>
+            <input type="text" id="ødelagtBeskrivelse" required>
+
+            <button type="submit">Registrer Ødelagt Utstyr</button>
+        </form>
+
+        <h3>Ødelagt Utstyr</h3>
+        <ul id="ødelagtUtstyr"></ul>
+    </div>
+
+    <script>
+        const forhåndsdefinertUtstyr = [
+            "Kamera", "Mikrofon", "Lysrigg", "Stativ", "Kabelsett"
+        ];
+
+        function lastInnUtstyr() {
+            let liste = document.getElementById('utstyrsliste');
+            liste.innerHTML = "";
+            let utstyrValg = document.getElementById('utstyrValg');
+            utstyrValg.innerHTML = "<option value='' disabled selected>Velg utstyr</option>";
+
+            forhåndsdefinertUtstyr.forEach(navn => {
+                leggTilUtstyr(navn, false);
+                let option = document.createElement('option');
+                option.value = navn;
+                option.textContent = navn;
+                utstyrValg.appendChild(option);
+            });
+        }
+
+        function leggTilUtstyr(navn = null, sjekkInput = true) {
+            let inputFelt = document.getElementById('nyttUtstyr');
+            let feilmelding = document.getElementById('feilmelding');
+
+            if (!navn) navn = inputFelt.value.trim();
+
+            if (sjekkInput) {
+                if (navn === "") {
+                    feilmelding.textContent = "Vennligst skriv inn et navn.";
+                    return;
+                } else if (/\d/.test(navn)) {
+                    feilmelding.textContent = "Ukjent utstyr.";
+                    return;
+                }
+            }
+
+            let liste = document.getElementById('utstyrsliste');
+            let nyttElement = document.createElement('li');
+            nyttElement.className = 'utstyr';
+            nyttElement.dataset.status = "tilgjengelig";
+            nyttElement.innerHTML = `
+                <span class="utstyr-navn">${navn}</span>
+                <button class="status-btn" onclick="endreStatus(this)">Tilgjengelig</button>
+                <button class="delete-btn" onclick="slettUtstyr(this)">🗑</button>`;
+            liste.appendChild(nyttElement);
+
+            inputFelt.value = "";
+            feilmelding.textContent = "";
+        }
+
+        function endreStatus(button) {
+            let utstyr = button.parentElement;
+            if (utstyr.dataset.status === "tilgjengelig") {
+                utstyr.dataset.status = "utleid";
+                utstyr.classList.add('utleid');
+                button.classList.add('utleid-btn');
+                button.textContent = "Utleid";
+            } else {
+                utstyr.dataset.status = "tilgjengelig";
+                utstyr.classList.remove('utleid');
+                button.classList.remove('utleid-btn');
+                button.textContent = "Tilgjengelig";
+            }
+        }
+
+        function registrerLån(event) {
+            event.preventDefault();
+
+            let lånerNavn = document.getElementById('lånerNavn').value.trim();
+            let valgtUtstyr = document.getElementById('utstyrValg').value;
+            let låneDato = document.getElementById('låneDato').value;
+            let returDato = document.getElementById('returDato').value;
+
+            if (lånerNavn && valgtUtstyr && låneDato && returDato) {
+                let liste = document.getElementById('lånteUtstyr');
+                let nyttLån = document.createElement('li');
+                nyttLån.innerHTML = `${lånerNavn} låner "${valgtUtstyr}" fra ${låneDato} til ${returDato}.`;
+                liste.appendChild(nyttLån);
+
+                // Fjern låneinformasjon etter registrering
+                document.getElementById('låneskjema').reset();
+            }
+        }
+
+        function slettUtstyr(button) {
+            button.parentElement.remove();
+        }
+
+        function registrerØdelagtUtstyr(event) {
+            event.preventDefault();
+
+            let ødelagtUtstyrNavn = document.getElementById('ødelagtUtstyrNavn').value.trim();
+            let ødelagtBeskrivelse = document.getElementById('ødelagtBeskrivelse').value.trim();
+
+            if (ødelagtUtstyrNavn && ødelagtBeskrivelse) {
+                let liste = document.getElementById('ødelagtUtstyr');
+                let ødelagtElement = document.createElement('li');
+                ødelagtElement.innerHTML = `<strong>${ødelagtUtstyrNavn}</strong> - ${ødelagtBeskrivelse}`;
+                liste.appendChild(ødelagtElement);
+
+                // Fjern ødelagt utstyr informasjon etter registrering
+                document.getElementById('ødelagtSkjema').reset();
+            }
+        }
+
+        window.onload = lastInnUtstyr;
+    </script>
 </body>
 </html>
